@@ -14,7 +14,260 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      alert_settings: {
+        Row: {
+          created_at: string
+          email_enabled: boolean | null
+          id: string
+          max_threshold: number | null
+          metric: string
+          min_threshold: number | null
+          user_id: string
+          zone_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email_enabled?: boolean | null
+          id?: string
+          max_threshold?: number | null
+          metric: string
+          min_threshold?: number | null
+          user_id: string
+          zone_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email_enabled?: boolean | null
+          id?: string
+          max_threshold?: number | null
+          metric?: string
+          min_threshold?: number | null
+          user_id?: string
+          zone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alert_settings_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plants: {
+        Row: {
+          created_at: string
+          growth_stage: string | null
+          health_score: number | null
+          id: string
+          image_url: string | null
+          light_needs: string | null
+          name: string
+          planted_date: string | null
+          species: string | null
+          updated_at: string
+          user_id: string
+          water_needs: string | null
+          zone_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          growth_stage?: string | null
+          health_score?: number | null
+          id?: string
+          image_url?: string | null
+          light_needs?: string | null
+          name: string
+          planted_date?: string | null
+          species?: string | null
+          updated_at?: string
+          user_id: string
+          water_needs?: string | null
+          zone_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          growth_stage?: string | null
+          health_score?: number | null
+          id?: string
+          image_url?: string | null
+          light_needs?: string | null
+          name?: string
+          planted_date?: string | null
+          species?: string | null
+          updated_at?: string
+          user_id?: string
+          water_needs?: string | null
+          zone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plants_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          notification_email: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          notification_email?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          notification_email?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      schedules: {
+        Row: {
+          created_at: string
+          days: string[]
+          duration: number
+          enabled: boolean
+          end_time: string
+          id: string
+          intensity: number
+          name: string
+          start_time: string
+          type: Database["public"]["Enums"]["schedule_type"]
+          updated_at: string
+          user_id: string
+          zone_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          days?: string[]
+          duration?: number
+          enabled?: boolean
+          end_time: string
+          id?: string
+          intensity?: number
+          name: string
+          start_time: string
+          type?: Database["public"]["Enums"]["schedule_type"]
+          updated_at?: string
+          user_id: string
+          zone_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          days?: string[]
+          duration?: number
+          enabled?: boolean
+          end_time?: string
+          id?: string
+          intensity?: number
+          name?: string
+          start_time?: string
+          type?: Database["public"]["Enums"]["schedule_type"]
+          updated_at?: string
+          user_id?: string
+          zone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schedules_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sensor_readings: {
+        Row: {
+          humidity: number | null
+          id: string
+          light_level: number | null
+          moisture: number | null
+          recorded_at: string
+          temperature: number | null
+          user_id: string
+          zone_id: string | null
+        }
+        Insert: {
+          humidity?: number | null
+          id?: string
+          light_level?: number | null
+          moisture?: number | null
+          recorded_at?: string
+          temperature?: number | null
+          user_id: string
+          zone_id?: string | null
+        }
+        Update: {
+          humidity?: number | null
+          id?: string
+          light_level?: number | null
+          moisture?: number | null
+          recorded_at?: string
+          temperature?: number | null
+          user_id?: string
+          zone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sensor_readings_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      zones: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          name: string
+          plants: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          id?: string
+          name: string
+          plants?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          name?: string
+          plants?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +276,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      schedule_type: "irrigation" | "lighting"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +403,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      schedule_type: ["irrigation", "lighting"],
+    },
   },
 } as const
