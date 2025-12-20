@@ -14,6 +14,7 @@ import SoilVisualization from '@/components/greenhouse/SoilVisualization';
 import DataExport from '@/components/greenhouse/DataExport';
 import AnalyticsDashboard from '@/components/greenhouse/AnalyticsDashboard';
 import GreenhouseScene from '@/components/greenhouse/GreenhouseScene';
+import SchedulingSystem from '@/components/greenhouse/SchedulingSystem';
 
 import tomatoImg from '@/assets/tomato.jpg';
 import lettuceImg from '@/assets/lettuce.jpg';
@@ -70,6 +71,9 @@ export default function Index() {
             </div>
           </div>
         );
+
+      case 'schedules':
+        return <SchedulingSystem />;
 
       case 'analytics':
         return (
