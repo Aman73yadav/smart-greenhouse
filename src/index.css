@@ -2,95 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Core Colors - Forest Green Theme */
+    --background: 148 30% 6%;
+    --foreground: 120 15% 95%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 148 25% 10%;
+    --card-foreground: 120 15% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 148 25% 8%;
+    --popover-foreground: 120 15% 95%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Deep Forest Green */
+    --primary: 145 50% 35%;
+    --primary-foreground: 120 20% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - Warm Amber */
+    --secondary: 35 80% 50%;
+    --secondary-foreground: 35 10% 10%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Accent - Lime Green */
+    --accent: 85 60% 50%;
+    --accent-foreground: 85 10% 10%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Muted for subtle elements */
+    --muted: 148 20% 15%;
+    --muted-foreground: 148 10% 55%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Status Colors */
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --success: 145 60% 45%;
+    --success-foreground: 145 10% 98%;
+    
+    --warning: 35 90% 50%;
+    --warning-foreground: 35 10% 10%;
+    
+    --info: 200 70% 50%;
+    --info-foreground: 200 10% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Borders and inputs */
+    --border: 148 20% 18%;
+    --input: 148 20% 15%;
+    --ring: 145 50% 35%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Sidebar */
+    --sidebar-background: 148 25% 8%;
+    --sidebar-foreground: 120 15% 85%;
+    --sidebar-primary: 145 50% 40%;
+    --sidebar-primary-foreground: 120 20% 98%;
+    --sidebar-accent: 148 25% 15%;
+    --sidebar-accent-foreground: 120 15% 90%;
+    --sidebar-border: 148 20% 18%;
+    --sidebar-ring: 145 50% 35%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Custom Greenhouse Variables */
+    --greenhouse-glass: 180 30% 85%;
+    --greenhouse-glow: 145 60% 50%;
+    --soil-dark: 25 40% 15%;
+    --soil-light: 25 30% 25%;
+    --water-blue: 200 80% 50%;
+    
+    /* Gradients */
+    --gradient-greenhouse: linear-gradient(135deg, hsl(148 30% 8%) 0%, hsl(145 40% 15%) 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%);
+    --gradient-glow: linear-gradient(180deg, hsl(145 60% 50% / 0.3) 0%, transparent 100%);
+    --gradient-sensor-temp: linear-gradient(135deg, hsl(0 70% 50%) 0%, hsl(35 90% 50%) 100%);
+    --gradient-sensor-humidity: linear-gradient(135deg, hsl(200 80% 50%) 0%, hsl(180 70% 50%) 100%);
+    --gradient-sensor-moisture: linear-gradient(135deg, hsl(145 60% 45%) 0%, hsl(85 60% 50%) 100%);
+    --gradient-hero: linear-gradient(180deg, transparent 0%, hsl(148 30% 6%) 100%);
+    
+    /* Shadows */
+    --shadow-glow: 0 0 40px hsl(145 60% 50% / 0.2);
+    --shadow-card: 0 8px 32px hsl(0 0% 0% / 0.3);
+    --shadow-sensor: 0 4px 20px hsl(0 0% 0% / 0.4);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --background: 148 30% 6%;
+    --foreground: 120 15% 95%;
   }
 }
 
@@ -99,7 +95,237 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground;
+  html {
+    scroll-behavior: smooth;
   }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl;
+    box-shadow: var(--shadow-card);
+  }
+
+  .glass-panel-strong {
+    @apply bg-card/80 backdrop-blur-2xl border border-border/60 rounded-2xl;
+    box-shadow: var(--shadow-card);
+  }
+
+  .sensor-card {
+    @apply glass-panel p-6 relative overflow-hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sensor-card:hover {
+    @apply border-primary/50;
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-4px);
+  }
+
+  .sensor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 2rem 2rem 0 0;
+    background: var(--gradient-sensor-temp);
+    opacity: 0.8;
+  }
+
+  .sensor-card.humidity::before {
+    background: var(--gradient-sensor-humidity);
+  }
+
+  .sensor-card.moisture::before {
+    background: var(--gradient-sensor-moisture);
+  }
+
+  .sensor-card.light::before {
+    background: linear-gradient(135deg, hsl(45 90% 55%) 0%, hsl(35 80% 50%) 100%);
+  }
+
+  .sensor-card.co2::before {
+    background: linear-gradient(135deg, hsl(280 60% 50%) 0%, hsl(320 70% 50%) 100%);
+  }
+
+  .plant-card {
+    @apply glass-panel overflow-hidden cursor-pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .plant-card:hover {
+    transform: scale(1.02) translateY(-8px);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .control-slider {
+    @apply w-full h-3 rounded-full appearance-none cursor-pointer;
+    background: linear-gradient(90deg, hsl(var(--muted)) 0%, hsl(var(--primary)) 100%);
+  }
+
+  .control-slider::-webkit-slider-thumb {
+    @apply appearance-none w-6 h-6 rounded-full cursor-pointer;
+    background: hsl(var(--primary));
+    box-shadow: 0 0 10px hsl(var(--primary) / 0.5);
+    transition: all 0.2s ease;
+  }
+
+  .control-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.7);
+  }
+
+  .glow-text {
+    text-shadow: 0 0 30px hsl(var(--primary) / 0.5);
+  }
+
+  .floating {
+    animation: floating 6s ease-in-out infinite;
+  }
+
+  .pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+}
+
+@layer utilities {
+  .text-gradient-primary {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+  }
+
+  .text-gradient-warm {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(0 70% 55%) 100%);
+  }
+
+  .bg-gradient-greenhouse {
+    background: var(--gradient-greenhouse);
+  }
+
+  .bg-gradient-glass {
+    background: var(--gradient-glass);
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+}
+
+@keyframes floating {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px hsl(var(--primary) / 0.5));
+  }
+  50% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 25px hsl(var(--primary) / 0.8));
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.6s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out forwards;
+}
+
+/* Recharts customization */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: hsl(var(--border));
+  stroke-opacity: 0.3;
+}
+
+.recharts-text {
+  fill: hsl(var(--muted-foreground));
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.7);
 }
