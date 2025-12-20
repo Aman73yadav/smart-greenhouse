@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Thermometer, Droplets, Sprout, Sun, Wind } from 'lucide-react';
+import { Thermometer, Droplets, Sprout, Sun, Wind, Wifi, WifiOff } from 'lucide-react';
 
 import Navigation from '@/components/greenhouse/Navigation';
 import HeroSection from '@/components/greenhouse/HeroSection';
@@ -13,9 +13,10 @@ import AIInsights from '@/components/greenhouse/AIInsights';
 import SoilVisualization from '@/components/greenhouse/SoilVisualization';
 import DataExport from '@/components/greenhouse/DataExport';
 import AnalyticsDashboard from '@/components/greenhouse/AnalyticsDashboard';
-import GreenhouseScene from '@/components/greenhouse/GreenhouseScene';
+import RealisticGreenhouseScene from '@/components/greenhouse/RealisticGreenhouseScene';
 import SchedulingSystem from '@/components/greenhouse/SchedulingSystem';
 import ScheduleCalendar from '@/components/greenhouse/ScheduleCalendar';
+import { useRealtimeSensors } from '@/hooks/useRealtimeSensors';
 
 import tomatoImg from '@/assets/tomato.jpg';
 import lettuceImg from '@/assets/lettuce.jpg';
@@ -23,14 +24,6 @@ import carrotImg from '@/assets/carrot.jpg';
 import strawberryImg from '@/assets/strawberry.jpg';
 import cucumberImg from '@/assets/cucumber.jpg';
 import pepperImg from '@/assets/pepper.jpg';
-
-const sensorData = [
-  { title: 'Temperature', value: 24.5, unit: '°C', icon: Thermometer, type: 'temperature' as const, trend: 'stable' as const, optimal: { min: 20, max: 30 } },
-  { title: 'Humidity', value: 68, unit: '%', icon: Droplets, type: 'humidity' as const, trend: 'up' as const, optimal: { min: 50, max: 80 } },
-  { title: 'Soil Moisture', value: 72, unit: '%', icon: Sprout, type: 'moisture' as const, trend: 'down' as const, optimal: { min: 60, max: 85 } },
-  { title: 'Light Intensity', value: 850, unit: 'lux', icon: Sun, type: 'light' as const, trend: 'stable' as const, optimal: { min: 400, max: 1200 } },
-  { title: 'CO₂ Level', value: 420, unit: 'ppm', icon: Wind, type: 'co2' as const, trend: 'up' as const, optimal: { min: 300, max: 600 } },
-];
 
 const plants = [
   { name: 'Cherry Tomatoes', image: tomatoImg, variety: 'Sweet Million', planted: 'Nov 15', growthStage: 75, waterNeeds: 'medium' as const, lightNeeds: 'high' as const, daysToHarvest: 12, health: 92 },
@@ -44,6 +37,16 @@ const plants = [
 export default function Index() {
   const [activeSection, setActiveSection] = useState('dashboard');
   const contentRef = useRef<HTMLDivElement>(null);
+  const { sensorData: liveSensorData, trend, isConnected, lastUpdate } = useRealtimeSensors();
+
+  // Build sensor cards with live data
+  const sensorCards = [
+    { title: 'Temperature', value: liveSensorData.temperature, unit: '°C', icon: Thermometer, type: 'temperature' as const, trend: trend.temperature, optimal: { min: 20, max: 30 } },
+    { title: 'Humidity', value: liveSensorData.humidity, unit: '%', icon: Droplets, type: 'humidity' as const, trend: trend.humidity, optimal: { min: 50, max: 80 } },
+    { title: 'Soil Moisture', value: liveSensorData.moisture, unit: '%', icon: Sprout, type: 'moisture' as const, trend: trend.moisture, optimal: { min: 60, max: 85 } },
+    { title: 'Light Intensity', value: liveSensorData.lightLevel, unit: 'lux', icon: Sun, type: 'light' as const, trend: trend.lightLevel, optimal: { min: 400, max: 1200 } },
+    { title: 'CO₂ Level', value: liveSensorData.co2, unit: 'ppm', icon: Wind, type: 'co2' as const, trend: trend.co2, optimal: { min: 300, max: 600 } },
+  ];
 
   const scrollToContent = () => {
     contentRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -126,7 +129,24 @@ export default function Index() {
       default:
         return (
           <div className="space-y-8">
-            {/* 3D Greenhouse Visualization */}
+            {/* Connection Status */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-3 text-sm"
+            >
+              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${isConnected ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}`}>
+                {isConnected ? <Wifi className="w-4 h-4" /> : <WifiOff className="w-4 h-4" />}
+                <span className="font-medium">{isConnected ? 'Live Connected' : 'Simulated Data'}</span>
+              </div>
+              {lastUpdate && (
+                <span className="text-muted-foreground">
+                  Last update: {lastUpdate.toLocaleTimeString()}
+                </span>
+              )}
+            </motion.div>
+
+            {/* 3D Greenhouse Visualization with Real Images */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -137,17 +157,17 @@ export default function Index() {
                   3D Greenhouse View
                 </h2>
                 <p className="text-muted-foreground">
-                  Interactive visualization of your smart greenhouse environment
+                  Real-time visualization with live sensor data from IoT devices
                 </p>
               </div>
-              <div className="h-[400px]">
-                <GreenhouseScene />
+              <div className="h-[450px]">
+                <RealisticGreenhouseScene sensorData={liveSensorData} />
               </div>
             </motion.div>
 
-            {/* Sensor Cards */}
+            {/* Real-time Sensor Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-              {sensorData.map((sensor, index) => (
+              {sensorCards.map((sensor, index) => (
                 <motion.div
                   key={sensor.title}
                   initial={{ opacity: 0, y: 20 }}
