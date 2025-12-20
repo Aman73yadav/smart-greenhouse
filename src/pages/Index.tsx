@@ -15,6 +15,7 @@ import DataExport from '@/components/greenhouse/DataExport';
 import AnalyticsDashboard from '@/components/greenhouse/AnalyticsDashboard';
 import GreenhouseScene from '@/components/greenhouse/GreenhouseScene';
 import SchedulingSystem from '@/components/greenhouse/SchedulingSystem';
+import ScheduleCalendar from '@/components/greenhouse/ScheduleCalendar';
 
 import tomatoImg from '@/assets/tomato.jpg';
 import lettuceImg from '@/assets/lettuce.jpg';
@@ -74,6 +75,22 @@ export default function Index() {
 
       case 'schedules':
         return <SchedulingSystem />;
+
+      case 'calendar':
+        return (
+          <ScheduleCalendar 
+            schedules={[
+              { id: '1', name: 'Morning Irrigation', zone_id: 'zone-a', type: 'irrigation', start_time: '06:00', end_time: '06:30', days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], enabled: true, intensity: 75 },
+              { id: '2', name: 'Grow Lights', zone_id: 'zone-b', type: 'lighting', start_time: '05:00', end_time: '20:00', days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], enabled: true, intensity: 80 },
+              { id: '3', name: 'Evening Watering', zone_id: 'zone-c', type: 'irrigation', start_time: '18:00', end_time: '18:20', days: ['Mon', 'Wed', 'Fri'], enabled: true, intensity: 50 },
+            ]}
+            zones={[
+              { id: 'zone-a', name: 'Zone A - Tomatoes', color: 'bg-red-500' },
+              { id: 'zone-b', name: 'Zone B - Leafy Greens', color: 'bg-green-500' },
+              { id: 'zone-c', name: 'Zone C - Root Vegetables', color: 'bg-orange-500' },
+            ]}
+          />
+        );
 
       case 'analytics':
         return (

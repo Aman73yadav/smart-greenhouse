@@ -11,9 +11,12 @@ import {
   X,
   Sprout,
   Cpu,
-  CalendarClock
+  CalendarClock,
+  Calendar,
+  LogOut
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
 
 interface NavItem {
   id: string;
@@ -25,6 +28,7 @@ const navItems: NavItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
   { id: 'plants', label: 'Plants', icon: <Sprout className="w-5 h-5" /> },
   { id: 'schedules', label: 'Schedules', icon: <CalendarClock className="w-5 h-5" /> },
+  { id: 'calendar', label: 'Calendar', icon: <Calendar className="w-5 h-5" /> },
   { id: 'analytics', label: 'Analytics', icon: <BarChart3 className="w-5 h-5" /> },
   { id: 'controls', label: 'Controls', icon: <Settings className="w-5 h-5" /> },
   { id: 'alerts', label: 'Alerts', icon: <Bell className="w-5 h-5" /> },
@@ -38,7 +42,7 @@ interface NavigationProps {
 
 export default function Navigation({ activeSection, onSectionChange }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+  const { signOut, user } = useAuth();
   return (
     <>
       {/* Desktop Navigation */}
@@ -78,15 +82,21 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
             ))}
           </div>
 
-          {/* Status Indicator */}
+          {/* Status Indicator & Logout */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-success/10 border border-success/30">
               <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-              <span className="text-xs font-medium text-success">System Online</span>
+              <span className="text-xs font-medium text-success">Online</span>
             </div>
-            <div className="p-2 rounded-xl bg-muted hover:bg-muted/80 cursor-pointer transition-colors">
-              <Cpu className="w-5 h-5 text-muted-foreground" />
-            </div>
+            {user && (
+              <button
+                onClick={signOut}
+                className="flex items-center gap-2 p-2 rounded-xl bg-muted hover:bg-destructive/20 text-muted-foreground hover:text-destructive cursor-pointer transition-colors"
+                title="Sign out"
+              >
+                <LogOut className="w-5 h-5" />
+              </button>
+            )}
           </div>
         </div>
       </motion.nav>
