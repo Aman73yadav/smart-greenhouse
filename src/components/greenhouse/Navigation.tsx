@@ -10,7 +10,8 @@ import {
   Menu,
   X,
   Sprout,
-  Cpu
+  Cpu,
+  CalendarClock
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -23,6 +24,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
   { id: 'plants', label: 'Plants', icon: <Sprout className="w-5 h-5" /> },
+  { id: 'schedules', label: 'Schedules', icon: <CalendarClock className="w-5 h-5" /> },
   { id: 'analytics', label: 'Analytics', icon: <BarChart3 className="w-5 h-5" /> },
   { id: 'controls', label: 'Controls', icon: <Settings className="w-5 h-5" /> },
   { id: 'alerts', label: 'Alerts', icon: <Bell className="w-5 h-5" /> },
