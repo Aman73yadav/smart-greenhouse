@@ -14,6 +14,8 @@ import SoilVisualization from '@/components/greenhouse/SoilVisualization';
 import DataExport from '@/components/greenhouse/DataExport';
 import AnalyticsDashboard from '@/components/greenhouse/AnalyticsDashboard';
 import RealisticGreenhouseScene from '@/components/greenhouse/RealisticGreenhouseScene';
+import VirtualFieldVisualization from '@/components/greenhouse/VirtualFieldVisualization';
+import SensorGraphs from '@/components/greenhouse/SensorGraphs';
 import SchedulingSystem from '@/components/greenhouse/SchedulingSystem';
 import ScheduleCalendar from '@/components/greenhouse/ScheduleCalendar';
 import { useRealtimeSensors } from '@/hooks/useRealtimeSensors';
@@ -165,7 +167,11 @@ export default function Index() {
               </div>
             </motion.div>
 
-            {/* Real-time Sensor Cards */}
+            {/* 3D Virtual Field with Growth Simulation */}
+            <VirtualFieldVisualization sensorData={liveSensorData} />
+
+            {/* Real-time Sensor Graphs */}
+            <SensorGraphs sensorData={liveSensorData} />
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
               {sensorCards.map((sensor, index) => (
                 <motion.div
