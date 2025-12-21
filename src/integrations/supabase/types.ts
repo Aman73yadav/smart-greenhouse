@@ -55,6 +55,65 @@ export type Database = {
           },
         ]
       }
+      iot_devices: {
+        Row: {
+          battery_level: number | null
+          created_at: string
+          device_id: string
+          device_type: string | null
+          firmware_version: string | null
+          id: string
+          ip_address: string | null
+          last_seen: string | null
+          metadata: Json | null
+          name: string
+          status: string | null
+          updated_at: string
+          user_id: string
+          zone_id: string | null
+        }
+        Insert: {
+          battery_level?: number | null
+          created_at?: string
+          device_id: string
+          device_type?: string | null
+          firmware_version?: string | null
+          id?: string
+          ip_address?: string | null
+          last_seen?: string | null
+          metadata?: Json | null
+          name: string
+          status?: string | null
+          updated_at?: string
+          user_id: string
+          zone_id?: string | null
+        }
+        Update: {
+          battery_level?: number | null
+          created_at?: string
+          device_id?: string
+          device_type?: string | null
+          firmware_version?: string | null
+          id?: string
+          ip_address?: string | null
+          last_seen?: string | null
+          metadata?: Json | null
+          name?: string
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+          zone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iot_devices_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plants: {
         Row: {
           created_at: string

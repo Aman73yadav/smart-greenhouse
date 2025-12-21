@@ -16,6 +16,7 @@ import AnalyticsDashboard from '@/components/greenhouse/AnalyticsDashboard';
 import RealisticGreenhouseScene from '@/components/greenhouse/RealisticGreenhouseScene';
 import VirtualFieldVisualization from '@/components/greenhouse/VirtualFieldVisualization';
 import SensorGraphs from '@/components/greenhouse/SensorGraphs';
+import DeviceManagement from '@/components/greenhouse/DeviceManagement';
 import SchedulingSystem from '@/components/greenhouse/SchedulingSystem';
 import ScheduleCalendar from '@/components/greenhouse/ScheduleCalendar';
 import { useRealtimeSensors } from '@/hooks/useRealtimeSensors';
@@ -77,6 +78,9 @@ export default function Index() {
             </div>
           </div>
         );
+
+      case 'devices':
+        return <DeviceManagement />;
 
       case 'schedules':
         return <SchedulingSystem />;
