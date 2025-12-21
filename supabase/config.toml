@@ -1,1 +1,7 @@
 project_id = "tivanypjallbszrbyiuu"
+
+[functions.send-notification]
+verify_jwt = true
+
+[functions.iot-sensor-ingest]
+verify_jwt = false
