@@ -15,6 +15,8 @@ interface SensorPayload {
   moisture?: number;
   light_level?: number;
   timestamp?: string;
+  battery_level?: number;
+  firmware_version?: string;
 }
 
 interface BatchPayload {
@@ -46,10 +48,22 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
+    // Track devices that sent data
+    const deviceUpdates: Map<string, { user_id: string; battery_level?: number; firmware_version?: string }> = new Map();
+
     // Validate and prepare readings for insertion
     const validReadings = readings.map((reading: SensorPayload) => {
       if (!reading.user_id) {
         throw new Error("user_id is required for each reading");
+      }
+
+      // Track device for last_seen update
+      if (reading.device_id) {
+        deviceUpdates.set(reading.device_id, {
+          user_id: reading.user_id,
+          battery_level: reading.battery_level,
+          firmware_version: reading.firmware_version,
+        });
       }
 
       return {
@@ -63,7 +77,7 @@ const handler = async (req: Request): Promise<Response> => {
       };
     });
 
-    console.log(`Processing ${validReadings.length} sensor readings`);
+    console.log(`Processing ${validReadings.length} sensor readings from ${deviceUpdates.size} devices`);
 
     // Insert sensor readings
     const { data, error } = await supabase
@@ -81,6 +95,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Successfully inserted ${data.length} readings`);
 
+    // Update device last_seen timestamps
+    for (const [deviceId, deviceData] of deviceUpdates) {
+      await updateDeviceStatus(supabase, deviceId, deviceData);
+    }
+
     // Check for threshold alerts
     for (const reading of validReadings) {
       await checkThresholdAlerts(supabase, reading);
@@ -91,6 +110,7 @@ const handler = async (req: Request): Promise<Response> => {
         success: true,
         message: `Processed ${data.length} sensor readings`,
         readings: data,
+        devices_updated: deviceUpdates.size,
       }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
@@ -102,6 +122,41 @@ const handler = async (req: Request): Promise<Response> => {
     );
   }
 };
+
+// Update device status and last_seen timestamp
+async function updateDeviceStatus(
+  supabase: any, 
+  deviceId: string, 
+  deviceData: { user_id: string; battery_level?: number; firmware_version?: string }
+) {
+  try {
+    const updateData: any = {
+      last_seen: new Date().toISOString(),
+      status: 'online',
+    };
+
+    if (deviceData.battery_level !== undefined) {
+      updateData.battery_level = deviceData.battery_level;
+    }
+    if (deviceData.firmware_version) {
+      updateData.firmware_version = deviceData.firmware_version;
+    }
+
+    const { error } = await supabase
+      .from("iot_devices")
+      .update(updateData)
+      .eq("device_id", deviceId);
+
+    if (error) {
+      // Device might not be registered yet - that's okay
+      console.log(`Device ${deviceId} not found or update failed:`, error.message);
+    } else {
+      console.log(`Updated device ${deviceId} last_seen`);
+    }
+  } catch (err) {
+    console.error(`Error updating device ${deviceId}:`, err);
+  }
+}
 
 // Check if any thresholds are exceeded and trigger notifications
 async function checkThresholdAlerts(supabase: any, reading: any) {
@@ -137,13 +192,11 @@ async function checkThresholdAlerts(supabase: any, reading: any) {
       // Check min threshold
       if (setting.min_threshold !== null && currentValue < setting.min_threshold) {
         console.log(`Alert: ${setting.metric} below minimum threshold (${currentValue} < ${setting.min_threshold})`);
-        // Could trigger notification here
       }
 
       // Check max threshold
       if (setting.max_threshold !== null && currentValue > setting.max_threshold) {
         console.log(`Alert: ${setting.metric} above maximum threshold (${currentValue} > ${setting.max_threshold})`);
-        // Could trigger notification here
       }
     }
   } catch (err) {

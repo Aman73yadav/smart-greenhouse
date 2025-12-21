@@ -27,6 +27,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
   { id: 'plants', label: 'Plants', icon: <Sprout className="w-5 h-5" /> },
+  { id: 'devices', label: 'Devices', icon: <Cpu className="w-5 h-5" /> },
   { id: 'schedules', label: 'Schedules', icon: <CalendarClock className="w-5 h-5" /> },
   { id: 'calendar', label: 'Calendar', icon: <Calendar className="w-5 h-5" /> },
   { id: 'analytics', label: 'Analytics', icon: <BarChart3 className="w-5 h-5" /> },
