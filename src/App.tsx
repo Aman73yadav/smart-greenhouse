@@ -42,6 +42,11 @@ const App = () => (
               <Index />
             </ProtectedRoute>
           } />
+          <Route path="/wokwi-guide" element={
+            <ProtectedRoute>
+              <WokwiGuide />
+            </ProtectedRoute>
+          } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
