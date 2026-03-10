@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Cpu, Plus, Trash2, Edit2, Wifi, WifiOff, Battery, 
@@ -149,6 +150,7 @@ interface AddDeviceFormData {
 }
 
 export default function DeviceManagement() {
+  const navigate = useNavigate();
   const { devices, isLoading, addDevice, updateDevice, deleteDevice, refetch } = useIoTDevices();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingDevice, setEditingDevice] = useState<IoTDevice | null>(null);
@@ -218,6 +220,10 @@ export default function DeviceManagement() {
           <p className="text-muted-foreground">Manage your connected sensors and devices</p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => navigate('/wokwi-guide')} className="gap-2">
+            <Cpu className="w-4 h-4" />
+            Wokwi Guide
+          </Button>
           <Button variant="outline" size="sm" onClick={refetch} className="gap-2">
             <RefreshCw className="w-4 h-4" />
             Refresh
