@@ -150,6 +150,7 @@ interface AddDeviceFormData {
 }
 
 export default function DeviceManagement() {
+  const navigate = useNavigate();
   const { devices, isLoading, addDevice, updateDevice, deleteDevice, refetch } = useIoTDevices();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingDevice, setEditingDevice] = useState<IoTDevice | null>(null);
