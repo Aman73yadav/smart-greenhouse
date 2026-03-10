@@ -187,6 +187,9 @@ async function checkThresholdAlerts(supabase: any, reading: any) {
         case "light_level":
           currentValue = reading.light_level;
           break;
+        case "co2":
+          currentValue = reading.co2;
+          break;
       }
 
       if (currentValue === null) continue;
