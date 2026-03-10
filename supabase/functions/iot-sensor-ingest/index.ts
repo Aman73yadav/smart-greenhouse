@@ -74,6 +74,7 @@ const handler = async (req: Request): Promise<Response> => {
         humidity: reading.humidity ?? null,
         moisture: reading.moisture ?? null,
         light_level: reading.light_level ?? null,
+        co2: reading.co2 ?? null,
         recorded_at: reading.timestamp || new Date().toISOString(),
       };
     });
