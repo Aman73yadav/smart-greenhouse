@@ -1,0 +1,1 @@
+ALTER TABLE public.sensor_readings ADD COLUMN co2 numeric NULL;
