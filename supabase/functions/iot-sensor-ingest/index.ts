@@ -14,6 +14,7 @@ interface SensorPayload {
   humidity?: number;
   moisture?: number;
   light_level?: number;
+  co2?: number;
   timestamp?: string;
   battery_level?: number;
   firmware_version?: string;
