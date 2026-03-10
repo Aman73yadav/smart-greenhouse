@@ -20,6 +20,7 @@ interface SensorReading {
   humidity: number | null;
   moisture: number | null;
   light_level: number | null;
+  co2: number | null;
   recorded_at: string;
 }
 
