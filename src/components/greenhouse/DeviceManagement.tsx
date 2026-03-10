@@ -220,6 +220,10 @@ export default function DeviceManagement() {
           <p className="text-muted-foreground">Manage your connected sensors and devices</p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => navigate('/wokwi-guide')} className="gap-2">
+            <Cpu className="w-4 h-4" />
+            Wokwi Guide
+          </Button>
           <Button variant="outline" size="sm" onClick={refetch} className="gap-2">
             <RefreshCw className="w-4 h-4" />
             Refresh
