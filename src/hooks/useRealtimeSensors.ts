@@ -95,7 +95,7 @@ export function useRealtimeSensors() {
         humidity: reading.humidity ?? prev.humidity,
         moisture: reading.moisture ?? prev.moisture,
         lightLevel: reading.light_level ?? prev.lightLevel,
-        co2: prev.co2, // CO2 not in DB, keep simulated
+        co2: reading.co2 ?? prev.co2,
         recordedAt: reading.recorded_at,
         zoneId: reading.zone_id,
       };
