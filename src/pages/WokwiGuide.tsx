@@ -60,90 +60,80 @@ export default function WokwiGuide() {
   const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/iot-sensor-ingest`;
   const userId = user?.id || 'YOUR_USER_ID';
 
-  const arduinoCode = `#include <WiFi.h>
-#include <HTTPClient.h>
-#include <ArduinoJson.h>
+  const micropythonCode = `import network
+import time
+import machine
+import dht
+import urequests
+import json
+from machine import Pin, ADC
 
-// WiFi credentials (Wokwi uses "Wokwi-GUEST" with no password)
-const char* ssid = "Wokwi-GUEST";
-const char* password = "";
+# --- Configuration ---
+API_URL = "${apiUrl}"
+USER_ID = "${userId}"
+DEVICE_ID = "${deviceId}"
 
-// GreenHouse API configuration
-const char* API_URL = "${apiUrl}";
-const char* USER_ID = "${userId}";
-const char* DEVICE_ID = "${deviceId}";
+# --- Sensors Setup ---
+dht_sensor = dht.DHT22(Pin(15))
+ldr = ADC(26)        # Light sensor (LDR)
+soil = ADC(27)       # Soil moisture sensor
+# CO2 sensor on ADC pin 28 (e.g. MQ-135 analog output)
+co2_sensor = ADC(28)
 
-// Sensor pins (adjust for your Wokwi circuit)
-const int TEMP_PIN = 34;      // Analog temperature sensor
-const int HUMIDITY_PIN = 35;  // Analog humidity sensor
-const int MOISTURE_PIN = 32;  // Soil moisture sensor
-const int LDR_PIN = 33;       // Light sensor (LDR)
+# --- WiFi Setup ---
+ssid = "Wokwi-GUEST"
+password = ""
 
-unsigned long lastSendTime = 0;
-const unsigned long SEND_INTERVAL = 10000; // Send every 10 seconds
+print("Connecting to WiFi", end="")
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+wlan.connect(ssid, password)
 
-void setup() {
-  Serial.begin(115200);
-  
-  // Connect to WiFi
-  WiFi.begin(ssid, password);
-  Serial.print("Connecting to WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println(" Connected!");
-  Serial.println("IP: " + WiFi.localIP().toString());
-}
+while not wlan.isconnected():
+    print(".", end="")
+    time.sleep(0.5)
 
-void loop() {
-  if (millis() - lastSendTime >= SEND_INTERVAL) {
-    sendSensorData();
-    lastSendTime = millis();
-  }
-}
+print("\\nConnected to WiFi!")
+print("IP:", wlan.ifconfig()[0])
 
-void sendSensorData() {
-  if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("WiFi disconnected! Reconnecting...");
-    WiFi.reconnect();
-    return;
-  }
+# --- Helper: Send data to GreenHouse API ---
+def send_data(data):
+    try:
+        headers = {"Content-Type": "application/json"}
+        response = urequests.post(API_URL, data=json.dumps(data), headers=headers)
+        print("Response:", response.status_code, response.text)
+        response.close()
+    except Exception as e:
+        print("Send error:", e)
 
-  // Read sensors (map to realistic ranges)
-  float temperature = map(analogRead(TEMP_PIN), 0, 4095, 150, 400) / 10.0;
-  float humidity = map(analogRead(HUMIDITY_PIN), 0, 4095, 200, 950) / 10.0;
-  float moisture = map(analogRead(MOISTURE_PIN), 0, 4095, 0, 1000) / 10.0;
-  float lightLevel = map(analogRead(LDR_PIN), 0, 4095, 0, 10000) / 10.0;
+# --- Main Loop ---
+while True:
+    try:
+        dht_sensor.measure()
+        temp = dht_sensor.temperature()
+        hum = dht_sensor.humidity()
+        light = round(ldr.read_u16() / 65535 * 1000, 1)  # 0-1000 lux range
+        moisture = round(100 - (soil.read_u16() / 65535 * 100), 1)  # inverse scale
+        co2 = round(400 + (co2_sensor.read_u16() / 65535 * 1600), 0)  # 400-2000 ppm range
 
-  // Build JSON payload
-  StaticJsonDocument<256> doc;
-  doc["user_id"] = USER_ID;
-  doc["device_id"] = DEVICE_ID;
-  doc["temperature"] = temperature;
-  doc["humidity"] = humidity;
-  doc["moisture"] = moisture;
-  doc["light_level"] = lightLevel;
+        data = {
+            "user_id": USER_ID,
+            "device_id": DEVICE_ID,
+            "temperature": temp,
+            "humidity": hum,
+            "light_level": light,
+            "moisture": moisture,
+            "co2": co2
+        }
 
-  String jsonStr;
-  serializeJson(doc, jsonStr);
+        print("Sensor Data:", data)
+        send_data(data)
 
-  // Send HTTP POST
-  HTTPClient http;
-  http.begin(API_URL);
-  http.addHeader("Content-Type", "application/json");
-  
-  int httpCode = http.POST(jsonStr);
-  
-  if (httpCode > 0) {
-    Serial.printf("Data sent! HTTP %d\\n", httpCode);
-    Serial.println("Response: " + http.getString());
-  } else {
-    Serial.printf("Error: %s\\n", http.errorToString(httpCode).c_str());
-  }
-  
-  http.end();
-}`;
+        time.sleep(10)  # Send every 10 seconds
+
+    except Exception as e:
+        print("Error:", e)
+        time.sleep(2)`;
 
   const jsonPayload = `{
   "user_id": "${userId}",
@@ -151,7 +141,8 @@ void sendSensorData() {
   "temperature": 24.5,
   "humidity": 65.0,
   "moisture": 72.0,
-  "light_level": 850.0
+  "light_level": 850.0,
+  "co2": 620
 }`;
 
   const curlExample = `curl -X POST "${apiUrl}" \\
@@ -172,15 +163,34 @@ void sendSensorData() {
             </div>
             <div>
               <h1 className="text-lg font-display font-bold text-foreground">Wokwi Connection Guide</h1>
-              <p className="text-xs text-muted-foreground">Connect your IoT simulator to GreenHouse Pro</p>
+              <p className="text-xs text-muted-foreground">Connect your Raspberry Pi Pico W simulator to GreenHouse Pro</p>
             </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 space-y-6">
+        {/* Your Wokwi Project Link */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-panel p-6 border-primary/30 bg-primary/5">
+          <div className="flex items-center gap-3 mb-3">
+            <ExternalLink className="w-5 h-5 text-primary" />
+            <h2 className="text-lg font-display font-bold text-foreground">Your Wokwi Project</h2>
+          </div>
+          <a
+            href="https://wokwi.com/projects/444857899299203073"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            Open in Wokwi <ExternalLink className="w-4 h-4" />
+          </a>
+          <p className="text-xs text-muted-foreground mt-2">
+            Raspberry Pi Pico W with DHT22, LDR, soil moisture & CO2 sensors
+          </p>
+        </motion.div>
+
         {/* Device ID Generator */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-panel p-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="glass-panel p-6">
           <div className="flex items-center gap-3 mb-4">
             <Zap className="w-6 h-6 text-warning" />
             <h2 className="text-xl font-display font-bold text-foreground">Device ID Generator</h2>
@@ -226,49 +236,45 @@ void sendSensorData() {
         </motion.div>
 
         {/* Steps */}
-        <CollapsibleSection title="Step 1: Set Up Wokwi Project" icon={<ExternalLink className="w-5 h-5 text-accent" />} defaultOpen>
+        <CollapsibleSection title="Step 1: Set Up Your Wokwi Project" icon={<ExternalLink className="w-5 h-5 text-accent" />} defaultOpen>
           <ol className="space-y-3 text-sm text-muted-foreground">
             <li className="flex gap-3">
               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center">1</span>
-              <span>Go to <a href="https://wokwi.com" target="_blank" rel="noopener noreferrer" className="text-primary underline">wokwi.com</a> and create a new ESP32 project.</span>
+              <span>Open your <a href="https://wokwi.com/projects/444857899299203073" target="_blank" rel="noopener noreferrer" className="text-primary underline">Wokwi project</a> (Raspberry Pi Pico W).</span>
             </li>
             <li className="flex gap-3">
               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center">2</span>
-              <span>Add sensors to your circuit: DHT22 (temp/humidity), soil moisture sensor, and an LDR (light).</span>
+              <span>Your circuit has: <strong>DHT22</strong> (temperature & humidity), <strong>LDR</strong> (light), <strong>soil moisture</strong> sensor, and an <strong>MQ-135</strong> (CO2). Add the CO2 sensor on ADC pin 28 if not already present.</span>
             </li>
             <li className="flex gap-3">
               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center">3</span>
-              <span>Copy the Arduino code from Step 2 below into your Wokwi sketch.</span>
+              <span>Replace the code in <code className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs text-foreground">main.py</code> with the MicroPython code from Step 2 below.</span>
             </li>
             <li className="flex gap-3">
               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center">4</span>
-              <span>Add the <code className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs text-foreground">ArduinoJson</code> library in Wokwi's Library Manager.</span>
-            </li>
-            <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center">5</span>
-              <span>Run the simulation — data will stream to your GreenHouse dashboard automatically!</span>
+              <span>Run the simulation — sensor data will stream to your GreenHouse dashboard every 10 seconds!</span>
             </li>
           </ol>
         </CollapsibleSection>
 
-        <CollapsibleSection title="Step 2: Arduino Code (ESP32)" icon={<Code2 className="w-5 h-5 text-secondary" />} defaultOpen>
+        <CollapsibleSection title="Step 2: MicroPython Code (Pico W)" icon={<Code2 className="w-5 h-5 text-secondary" />} defaultOpen>
           <div className="relative">
             <div className="absolute top-3 right-3 z-10">
-              <CopyButton text={arduinoCode} />
+              <CopyButton text={micropythonCode} />
             </div>
             <pre className="p-4 rounded-xl bg-muted border border-border overflow-x-auto text-xs font-mono text-foreground max-h-[500px] overflow-y-auto">
-              {arduinoCode}
+              {micropythonCode}
             </pre>
           </div>
           <div className="mt-4 p-3 rounded-xl bg-warning/10 border border-warning/20">
             <p className="text-xs text-warning">
-              <strong>Note:</strong> Wokwi uses <code className="px-1 rounded bg-muted font-mono">"Wokwi-GUEST"</code> as WiFi SSID with no password. The code is pre-configured for this.
+              <strong>Note:</strong> Wokwi uses <code className="px-1 rounded bg-muted font-mono">"Wokwi-GUEST"</code> as WiFi SSID with no password. The code sends temperature, humidity, light, moisture, and CO2 data.
             </p>
           </div>
         </CollapsibleSection>
 
         <CollapsibleSection title="Step 3: JSON Payload Format" icon={<Terminal className="w-5 h-5 text-info" />}>
-          <p className="text-sm text-muted-foreground mb-3">Your device will send data in this format:</p>
+          <p className="text-sm text-muted-foreground mb-3">Your device sends data in this format (now includes CO2):</p>
           <div className="relative">
             <div className="absolute top-3 right-3 z-10">
               <CopyButton text={jsonPayload} />

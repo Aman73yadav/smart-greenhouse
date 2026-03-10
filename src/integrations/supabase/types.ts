@@ -258,6 +258,7 @@ export type Database = {
       }
       sensor_readings: {
         Row: {
+          co2: number | null
           humidity: number | null
           id: string
           light_level: number | null
@@ -268,6 +269,7 @@ export type Database = {
           zone_id: string | null
         }
         Insert: {
+          co2?: number | null
           humidity?: number | null
           id?: string
           light_level?: number | null
@@ -278,6 +280,7 @@ export type Database = {
           zone_id?: string | null
         }
         Update: {
+          co2?: number | null
           humidity?: number | null
           id?: string
           light_level?: number | null

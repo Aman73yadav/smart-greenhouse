@@ -14,6 +14,7 @@ interface SensorPayload {
   humidity?: number;
   moisture?: number;
   light_level?: number;
+  co2?: number;
   timestamp?: string;
   battery_level?: number;
   firmware_version?: string;
@@ -73,6 +74,7 @@ const handler = async (req: Request): Promise<Response> => {
         humidity: reading.humidity ?? null,
         moisture: reading.moisture ?? null,
         light_level: reading.light_level ?? null,
+        co2: reading.co2 ?? null,
         recorded_at: reading.timestamp || new Date().toISOString(),
       };
     });
@@ -184,6 +186,9 @@ async function checkThresholdAlerts(supabase: any, reading: any) {
           break;
         case "light_level":
           currentValue = reading.light_level;
+          break;
+        case "co2":
+          currentValue = reading.co2;
           break;
       }
 
