@@ -48,6 +48,7 @@ export default function SensorGraphs({ sensorData }: SensorGraphsProps) {
     addDataPoint(setHumidityHistory, sensorData.humidity);
     addDataPoint(setMoistureHistory, sensorData.moisture);
     addDataPoint(setLightHistory, sensorData.lightLevel);
+    addDataPoint(setCo2History, sensorData.co2);
   }, [sensorData]);
   
   const graphs = [
