@@ -143,7 +143,7 @@ export default function SensorGraphs({ sensorData }: SensorGraphsProps) {
       </div>
       
       <Tabs value={activeGraph} onValueChange={setActiveGraph}>
-        <TabsList className="grid grid-cols-4 mb-6">
+        <TabsList className="grid grid-cols-5 mb-6">
           {graphs.map((graph) => (
             <TabsTrigger 
               key={graph.id} 
