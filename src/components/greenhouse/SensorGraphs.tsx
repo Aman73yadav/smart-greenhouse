@@ -25,6 +25,7 @@ export default function SensorGraphs({ sensorData }: SensorGraphsProps) {
   const [humidityHistory, setHumidityHistory] = useState<DataPoint[]>([]);
   const [moistureHistory, setMoistureHistory] = useState<DataPoint[]>([]);
   const [lightHistory, setLightHistory] = useState<DataPoint[]>([]);
+  const [co2History, setCo2History] = useState<DataPoint[]>([]);
   
   // Update history when sensor data changes
   useEffect(() => {
