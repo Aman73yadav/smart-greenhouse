@@ -64,9 +64,9 @@ export function useRealtimeSensors() {
         .eq('user_id', user.id)
         .order('recorded_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
         console.error('Error fetching sensor data:', error);
         return;
       }
