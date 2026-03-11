@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { Thermometer, Droplets, Sprout, Sun, Wind } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 interface SensorGraphsProps {
   sensorData: {
@@ -20,14 +22,71 @@ interface DataPoint {
   timestamp: number;
 }
 
+const MAX_POINTS = 50;
+
+function readingToPoints(reading: any): Record<string, DataPoint> {
+  const date = new Date(reading.recorded_at);
+  const time = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const timestamp = date.getTime();
+  return {
+    temperature: { time, value: reading.temperature ?? 0, timestamp },
+    humidity: { time, value: reading.humidity ?? 0, timestamp },
+    moisture: { time, value: reading.moisture ?? 0, timestamp },
+    light: { time, value: reading.light_level ?? 0, timestamp },
+    co2: { time, value: reading.co2 ?? 0, timestamp },
+  };
+}
+
 export default function SensorGraphs({ sensorData }: SensorGraphsProps) {
+  const { user } = useAuth();
   const [temperatureHistory, setTemperatureHistory] = useState<DataPoint[]>([]);
   const [humidityHistory, setHumidityHistory] = useState<DataPoint[]>([]);
   const [moistureHistory, setMoistureHistory] = useState<DataPoint[]>([]);
   const [lightHistory, setLightHistory] = useState<DataPoint[]>([]);
   const [co2History, setCo2History] = useState<DataPoint[]>([]);
-  
-  // Update history when sensor data changes
+  const historyLoaded = useRef(false);
+
+  // Load historical data on mount
+  useEffect(() => {
+    if (!user || historyLoaded.current) return;
+
+    const loadHistory = async () => {
+      const { data, error } = await supabase
+        .from('sensor_readings')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('recorded_at', { ascending: true })
+        .limit(MAX_POINTS);
+
+      if (error || !data || data.length === 0) return;
+
+      const temp: DataPoint[] = [];
+      const hum: DataPoint[] = [];
+      const moist: DataPoint[] = [];
+      const light: DataPoint[] = [];
+      const co2: DataPoint[] = [];
+
+      data.forEach((r) => {
+        const pts = readingToPoints(r);
+        temp.push(pts.temperature);
+        hum.push(pts.humidity);
+        moist.push(pts.moisture);
+        light.push(pts.light);
+        co2.push(pts.co2);
+      });
+
+      setTemperatureHistory(temp);
+      setHumidityHistory(hum);
+      setMoistureHistory(moist);
+      setLightHistory(light);
+      setCo2History(co2);
+      historyLoaded.current = true;
+    };
+
+    loadHistory();
+  }, [user]);
+
+  // Append live data when sensor data changes
   useEffect(() => {
     const now = new Date();
     const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -39,8 +98,7 @@ export default function SensorGraphs({ sensorData }: SensorGraphsProps) {
     ) => {
       setter(prev => {
         const newData = [...prev, { time: timeStr, value, timestamp }];
-        // Keep last 30 data points
-        return newData.slice(-30);
+        return newData.slice(-MAX_POINTS);
       });
     };
     
