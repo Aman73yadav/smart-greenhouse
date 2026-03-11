@@ -100,6 +100,18 @@ export default function SensorGraphs({ sensorData }: SensorGraphsProps) {
       max: 1500,
       optimal: { min: 400, max: 1200 },
     },
+    {
+      id: 'co2',
+      title: 'CO₂ Level',
+      icon: Wind,
+      data: co2History,
+      color: 'hsl(280, 70%, 55%)',
+      gradient: ['hsl(280, 70%, 55%)', 'hsl(320, 70%, 55%)'],
+      unit: 'ppm',
+      min: 200,
+      max: 800,
+      optimal: { min: 300, max: 600 },
+    },
   ];
   
   const [activeGraph, setActiveGraph] = useState('temperature');
