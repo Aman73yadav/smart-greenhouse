@@ -10,6 +10,7 @@ interface SensorGraphsProps {
     humidity: number;
     moisture: number;
     lightLevel: number;
+    co2: number;
   };
 }
 
