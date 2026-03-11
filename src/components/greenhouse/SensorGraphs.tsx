@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
-import { Thermometer, Droplets, Sprout, Sun } from 'lucide-react';
+import { Thermometer, Droplets, Sprout, Sun, Wind } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface SensorGraphsProps {
@@ -10,6 +10,7 @@ interface SensorGraphsProps {
     humidity: number;
     moisture: number;
     lightLevel: number;
+    co2: number;
   };
 }
 
@@ -24,6 +25,7 @@ export default function SensorGraphs({ sensorData }: SensorGraphsProps) {
   const [humidityHistory, setHumidityHistory] = useState<DataPoint[]>([]);
   const [moistureHistory, setMoistureHistory] = useState<DataPoint[]>([]);
   const [lightHistory, setLightHistory] = useState<DataPoint[]>([]);
+  const [co2History, setCo2History] = useState<DataPoint[]>([]);
   
   // Update history when sensor data changes
   useEffect(() => {
@@ -46,6 +48,7 @@ export default function SensorGraphs({ sensorData }: SensorGraphsProps) {
     addDataPoint(setHumidityHistory, sensorData.humidity);
     addDataPoint(setMoistureHistory, sensorData.moisture);
     addDataPoint(setLightHistory, sensorData.lightLevel);
+    addDataPoint(setCo2History, sensorData.co2);
   }, [sensorData]);
   
   const graphs = [
@@ -97,6 +100,18 @@ export default function SensorGraphs({ sensorData }: SensorGraphsProps) {
       max: 1500,
       optimal: { min: 400, max: 1200 },
     },
+    {
+      id: 'co2',
+      title: 'CO₂ Level',
+      icon: Wind,
+      data: co2History,
+      color: 'hsl(280, 70%, 55%)',
+      gradient: ['hsl(280, 70%, 55%)', 'hsl(320, 70%, 55%)'],
+      unit: 'ppm',
+      min: 200,
+      max: 800,
+      optimal: { min: 300, max: 600 },
+    },
   ];
   
   const [activeGraph, setActiveGraph] = useState('temperature');
@@ -128,7 +143,7 @@ export default function SensorGraphs({ sensorData }: SensorGraphsProps) {
       </div>
       
       <Tabs value={activeGraph} onValueChange={setActiveGraph}>
-        <TabsList className="grid grid-cols-4 mb-6">
+        <TabsList className="grid grid-cols-5 mb-6">
           {graphs.map((graph) => (
             <TabsTrigger 
               key={graph.id} 
