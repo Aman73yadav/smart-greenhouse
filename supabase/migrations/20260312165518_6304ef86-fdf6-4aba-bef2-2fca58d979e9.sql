@@ -1,0 +1,1 @@
+UPDATE public.sensor_readings SET user_id = '985d5722-2df3-4892-bd95-483eb272747f' WHERE user_id = '6da1f608-72b9-471a-bc04-9637d1b81a7d';
