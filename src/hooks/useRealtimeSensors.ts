@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 
@@ -193,11 +193,35 @@ export function useRealtimeSensors() {
     return () => clearInterval(simulateUpdates);
   }, [user]);
 
+  const pushSimulatedData = useCallback((data: { temperature: number; humidity: number; co2: number; lightLevel: number; moisture: number }) => {
+    const newData: SensorData = {
+      temperature: data.temperature,
+      humidity: data.humidity,
+      moisture: data.moisture,
+      lightLevel: data.lightLevel,
+      co2: data.co2,
+      recordedAt: new Date().toISOString(),
+      zoneId: null,
+    };
+
+    setTrend({
+      temperature: calculateTrend(sensorData.temperature, data.temperature),
+      humidity: calculateTrend(sensorData.humidity, data.humidity),
+      moisture: calculateTrend(sensorData.moisture, data.moisture),
+      lightLevel: calculateTrend(sensorData.lightLevel, data.lightLevel),
+      co2: calculateTrend(sensorData.co2, data.co2),
+    });
+
+    setSensorData(newData);
+    setLastUpdate(new Date());
+  }, [sensorData]);
+
   return {
     sensorData,
     trend,
     isConnected,
     lastUpdate,
     refetch: fetchLatestReading,
+    pushSimulatedData,
   };
 }

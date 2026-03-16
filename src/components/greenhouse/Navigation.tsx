@@ -13,7 +13,8 @@ import {
   Cpu,
   CalendarClock,
   Calendar,
-  LogOut
+  LogOut,
+  CircuitBoard
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
@@ -34,6 +35,7 @@ const navItems: NavItem[] = [
   { id: 'controls', label: 'Controls', icon: <Settings className="w-5 h-5" /> },
   { id: 'alerts', label: 'Alerts', icon: <Bell className="w-5 h-5" /> },
   { id: 'export', label: 'Export', icon: <Download className="w-5 h-5" /> },
+  { id: 'simulator', label: 'Simulator', icon: <CircuitBoard className="w-5 h-5" /> },
 ];
 
 interface NavigationProps {

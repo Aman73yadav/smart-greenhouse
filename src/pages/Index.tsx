@@ -19,6 +19,7 @@ import SensorGraphs from '@/components/greenhouse/SensorGraphs';
 import DeviceManagement from '@/components/greenhouse/DeviceManagement';
 import SchedulingSystem from '@/components/greenhouse/SchedulingSystem';
 import ScheduleCalendar from '@/components/greenhouse/ScheduleCalendar';
+import ArduinoSimulator from '@/components/greenhouse/ArduinoSimulator';
 import { useRealtimeSensors } from '@/hooks/useRealtimeSensors';
 
 import tomatoImg from '@/assets/tomato.jpg';
@@ -40,7 +41,7 @@ const plants = [
 export default function Index() {
   const [activeSection, setActiveSection] = useState('dashboard');
   const contentRef = useRef<HTMLDivElement>(null);
-  const { sensorData: liveSensorData, trend, isConnected, lastUpdate } = useRealtimeSensors();
+  const { sensorData: liveSensorData, trend, isConnected, lastUpdate, pushSimulatedData } = useRealtimeSensors();
 
   // Build sensor cards with live data
   const sensorCards = [
@@ -130,6 +131,11 @@ export default function Index() {
           <div className="max-w-2xl mx-auto">
             <DataExport />
           </div>
+        );
+
+      case 'simulator':
+        return (
+          <ArduinoSimulator onSensorUpdate={pushSimulatedData} />
         );
 
       default:
