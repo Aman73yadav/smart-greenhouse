@@ -13,7 +13,8 @@ import {
   Cpu,
   CalendarClock,
   Calendar,
-  LogOut
+  LogOut,
+  CircuitBoard
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
