@@ -41,7 +41,7 @@ const plants = [
 export default function Index() {
   const [activeSection, setActiveSection] = useState('dashboard');
   const contentRef = useRef<HTMLDivElement>(null);
-  const { sensorData: liveSensorData, trend, isConnected, lastUpdate } = useRealtimeSensors();
+  const { sensorData: liveSensorData, trend, isConnected, lastUpdate, pushSimulatedData } = useRealtimeSensors();
 
   // Build sensor cards with live data
   const sensorCards = [
