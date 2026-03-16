@@ -19,6 +19,7 @@ import SensorGraphs from '@/components/greenhouse/SensorGraphs';
 import DeviceManagement from '@/components/greenhouse/DeviceManagement';
 import SchedulingSystem from '@/components/greenhouse/SchedulingSystem';
 import ScheduleCalendar from '@/components/greenhouse/ScheduleCalendar';
+import ArduinoSimulator from '@/components/greenhouse/ArduinoSimulator';
 import { useRealtimeSensors } from '@/hooks/useRealtimeSensors';
 
 import tomatoImg from '@/assets/tomato.jpg';
