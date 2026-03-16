@@ -133,6 +133,11 @@ export default function Index() {
           </div>
         );
 
+      case 'simulator':
+        return (
+          <ArduinoSimulator onSensorUpdate={pushSimulatedData} />
+        );
+
       default:
         return (
           <div className="space-y-8">
