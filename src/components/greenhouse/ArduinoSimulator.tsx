@@ -520,22 +520,31 @@ export default function ArduinoSimulator({ onSensorUpdate }: ArduinoSimulatorPro
             </CardContent>
           </Card>
 
-          {/* Wokwi Link Card */}
-          <Card className="border-primary/20 bg-primary/5">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <ExternalLink className="w-4 h-4 text-primary" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">Wokwi Simulation</p>
-                  <p className="text-xs text-muted-foreground">Same circuit running on Wokwi — identical output</p>
-                  <a href={WOKWI_URL} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1">
-                    Open Wokwi Project →
-                  </a>
-                </div>
+          {/* Wokwi Embedded Simulation */}
+          <Card className="border-primary/20">
+            <CardHeader className="pb-2 pt-3 px-4">
+              <CardTitle className="text-sm flex items-center justify-between">
+                Wokwi Live Simulation
+                <a href={WOKWI_URL} target="_blank" rel="noopener noreferrer"
+                  className="text-xs font-normal text-primary hover:underline flex items-center gap-1">
+                  <ExternalLink className="w-3 h-3" /> Full Screen
+                </a>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-2">
+              <div className="rounded-lg overflow-hidden border border-border bg-black">
+                <iframe
+                  src="https://wokwi.com/projects/444855832358838273"
+                  title="Wokwi Smart Greenhouse Simulation"
+                  className="w-full border-0"
+                  style={{ height: '320px' }}
+                  allow="fullscreen"
+                  sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                />
               </div>
+              <p className="text-[10px] text-muted-foreground mt-1.5 text-center">
+                Press ▶ in Wokwi to start — outputs match this simulator
+              </p>
             </CardContent>
           </Card>
         </div>
