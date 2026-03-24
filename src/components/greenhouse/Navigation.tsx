@@ -67,7 +67,7 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
           </div>
 
           {/* Nav Items */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
             {navItems.map((item) => (
               <button
                 key={item.id}
