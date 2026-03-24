@@ -73,7 +73,7 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
                 key={item.id}
                 onClick={() => onSectionChange(item.id)}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all",
+                  "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap shrink-0",
                   activeSection === item.id
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
